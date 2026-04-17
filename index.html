@@ -51,9 +51,10 @@ header {
   padding: 40px;
 }
 
-img {
-  max-width: 500px;
+video {
   width: 100%;
+  max-width: 500px;
+  border-radius: 10px;
 }
 </style>
 </head>
@@ -73,30 +74,29 @@ img {
 </header>
 
 <div class="content">
-  <img id="img">
+  <video id="video" autoplay loop muted playsinline></video>
   <audio id="audio"></audio>
 </div>
 
 </div>
 
-<!-- ✅ SCRIPT AT VERY BOTTOM -->
 <script>
 const data = {
   1: {
-    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.gif",
+    video: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.mp4",
     audio: "audio/audio1.mp3"
   },
   2: {
-    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@lesha_killerkriper2014_1776380665273.gif",
+    video: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@lesha_killerkriper2014_1776380665273.mp4",
     audio: "audio/audio2.mp3"
   },
   3: {
-    img: "https://via.placeholder.com/500x300.gif",
+    video: "https://your-link/video3.mp4",
     audio: "audio/audio3.mp3"
   }
 };
 
-const imgEl = document.getElementById("img");
+const videoEl = document.getElementById("video");
 const audioEl = document.getElementById("audio");
 const enterBtn = document.getElementById("enterBtn");
 
@@ -104,8 +104,13 @@ function switchTab(num) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab")[num - 1].classList.add("active");
 
-  imgEl.src = data[num].img;
+  // SWITCH VIDEO
+  videoEl.pause();
+  videoEl.src = data[num].video;
+  videoEl.load();
+  videoEl.play().catch(()=>{});
 
+  // SWITCH AUDIO
   audioEl.pause();
   audioEl.currentTime = 0;
   audioEl.src = data[num].audio;
@@ -116,7 +121,9 @@ enterBtn.onclick = () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
-  imgEl.src = data[1].img;
+  videoEl.src = data[1].video;
+  videoEl.play().catch(()=>{});
+
   audioEl.src = data[1].audio;
   audioEl.play().catch(()=>{});
 };
