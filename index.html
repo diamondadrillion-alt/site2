@@ -11,6 +11,7 @@ body {
   background: #111;
   color: white;
   font-family: Arial;
+  overflow: hidden;
 }
 
 #overlay {
@@ -27,11 +28,24 @@ body {
   filter: blur(10px);
 }
 
+/* FULLSCREEN VIDEO */
+video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* HEADER */
 header {
+  position: fixed;
+  top: 0;
+  right: 0;
   display: flex;
-  justify-content: flex-end;
   padding: 10px;
-  background: #222;
+  z-index: 2;
 }
 
 .tab {
@@ -46,15 +60,18 @@ header {
   color: black;
 }
 
-.content {
-  text-align: center;
-  padding: 40px;
-}
-
-video {
-  width: 100%;
-  max-width: 500px;
+/* CENTER TEXT BOX */
+.text-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0,0,0,0.6);
+  padding: 20px 30px;
   border-radius: 10px;
+  font-size: 24px;
+  text-align: center;
+  z-index: 1;
 }
 </style>
 </head>
@@ -73,10 +90,10 @@ video {
   <div class="tab" onclick="switchTab(3)">3</div>
 </header>
 
-<div class="content">
-  <video id="video" autoplay loop muted playsinline></video>
-  <audio id="audio"></audio>
-</div>
+<video id="video" autoplay loop muted playsinline></video>
+<audio id="audio" loop></audio>
+
+<div id="textBox" class="text-box"></div>
 
 </div>
 
@@ -84,48 +101,58 @@ video {
 const data = {
   1: {
     video: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.mp4",
-    audio: "audio/audio1.mp3"
+    audio: "audio/audio1.mp3",
+    text: "Welcome to Section 1"
   },
   2: {
     video: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@lesha_killerkriper2014_1776380665273.mp4",
-    audio: "audio/audio2.mp3"
+    audio: "audio/audio2.mp3",
+    text: "This is Section 2"
   },
   3: {
     video: "https://your-link/video3.mp4",
-    audio: "audio/audio3.mp3"
+    audio: "audio/audio3.mp3",
+    text: "You're viewing Section 3"
   }
 };
 
 const videoEl = document.getElementById("video");
 const audioEl = document.getElementById("audio");
+const textBox = document.getElementById("textBox");
 const enterBtn = document.getElementById("enterBtn");
 
 function switchTab(num) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab")[num - 1].classList.add("active");
 
-  // SWITCH VIDEO
+  // VIDEO
   videoEl.pause();
   videoEl.src = data[num].video;
   videoEl.load();
   videoEl.play().catch(()=>{});
 
-  // SWITCH AUDIO
+  // AUDIO (LOOPS AUTOMATICALLY)
   audioEl.pause();
   audioEl.currentTime = 0;
   audioEl.src = data[num].audio;
   audioEl.play().catch(()=>{});
+
+  // TEXT
+  textBox.textContent = data[num].text;
 }
 
 enterBtn.onclick = () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
+  // START FIRST TAB
   videoEl.src = data[1].video;
   videoEl.play().catch(()=>{});
 
   audioEl.src = data[1].audio;
   audioEl.play().catch(()=>{});
+
+  textBox.textContent = data[1].text;
 };
 </script>
 
