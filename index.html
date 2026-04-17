@@ -1,27 +1,106 @@
-<script>
-let current = 1;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Media Tabs</title>
 
+<style>
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial;
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  background: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+#main.blurred {
+  filter: blur(10px);
+}
+
+header {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px;
+  background: #222;
+}
+
+.tab {
+  margin-left: 10px;
+  padding: 8px 12px;
+  background: #333;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: white;
+  color: black;
+}
+
+.content {
+  text-align: center;
+  padding: 40px;
+}
+
+img {
+  max-width: 500px;
+  width: 100%;
+}
+</style>
+</head>
+
+<body>
+
+<div id="overlay">
+  <button id="enterBtn">Enter</button>
+</div>
+
+<div id="main" class="blurred">
+
+<header>
+  <div class="tab active" onclick="switchTab(1)">1</div>
+  <div class="tab" onclick="switchTab(2)">2</div>
+  <div class="tab" onclick="switchTab(3)">3</div>
+</header>
+
+<div class="content">
+  <img id="img">
+  <audio id="audio"></audio>
+</div>
+
+</div>
+
+<!-- ✅ SCRIPT AT VERY BOTTOM -->
+<script>
 const data = {
-  1: { 
-    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.gif", 
-    audio: "audio/audio1.mp3" 
+  1: {
+    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.gif",
+    audio: "audio/audio1.mp3"
   },
-  2: { 
-    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@lesha_killerkriper2014_1776380665273.gif", 
-    audio: "audio/audio2.mp3" 
+  2: {
+    img: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@lesha_killerkriper2014_1776380665273.gif",
+    audio: "audio/audio2.mp3"
   },
-  3: { 
-    img: "https://via.placeholder.com/500x300.gif", 
-    audio: "audio/audio3.mp3" 
+  3: {
+    img: "https://via.placeholder.com/500x300.gif",
+    audio: "audio/audio3.mp3"
   }
 };
 
 const imgEl = document.getElementById("img");
 const audioEl = document.getElementById("audio");
+const enterBtn = document.getElementById("enterBtn");
 
 function switchTab(num) {
-  current = num;
-
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab")[num - 1].classList.add("active");
 
@@ -30,17 +109,18 @@ function switchTab(num) {
   audioEl.pause();
   audioEl.currentTime = 0;
   audioEl.src = data[num].audio;
-
-  audioEl.play().catch(() => {});
+  audioEl.play().catch(()=>{});
 }
 
-document.getElementById("enterBtn").addEventListener("click", () => {
+enterBtn.onclick = () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
   imgEl.src = data[1].img;
-
   audioEl.src = data[1].audio;
-  audioEl.play().catch(() => {});
-});
+  audioEl.play().catch(()=>{});
+};
 </script>
+
+</body>
+</html>
