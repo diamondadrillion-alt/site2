@@ -13,13 +13,9 @@
     color: white;
   }
 
-  /* LOCK SCREEN */
   #overlay {
     position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background: rgba(0,0,0,0.9);
     display: flex;
     align-items: center;
@@ -38,13 +34,11 @@
     border-radius: 10px;
   }
 
-  /* MAIN CONTENT BLUR BEFORE ENTER */
   .blurred {
     filter: blur(15px);
     pointer-events: none;
   }
 
-  /* TOP BAR */
   header {
     display: flex;
     justify-content: flex-end;
@@ -67,7 +61,6 @@
     color: black;
   }
 
-  /* CONTENT */
   .content {
     text-align: center;
     padding: 50px 20px;
@@ -87,7 +80,6 @@
 
 <body>
 
-<!-- LOCK SCREEN -->
 <div id="overlay">
   <button id="enterBtn">Click to Enter</button>
 </div>
@@ -101,11 +93,9 @@
 </header>
 
 <div class="content">
-  <img id="img" src="image1.jpg">
+  <img id="img" src="image1.jpg" />
 
-  <audio id="audio1" src="audio1.mp3"></audio>
-  <audio id="audio2" src="audio2.mp3"></audio>
-  <audio id="audio3" src="audio3.mp3"></audio>
+  <audio id="audio"></audio>
 </div>
 
 </div>
@@ -113,45 +103,45 @@
 <script>
 let current = 1;
 
-const images = {
-  1: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.gif",
-  2: "image2.jpg",
-  3: "image3.jpg"
+const data = {
+  1: { img: "image1.gif", audio: "audio1.mp3" },
+  2: { img: "image2.gif", audio: "audio2.mp3" },
+  3: { img: "image3.gif", audio: "audio3.mp3" }
 };
 
-const audios = {
-  1: document.getElementById("https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_1776383593408.mp3"),
-  2: document.getElementById("audio2"),
-  3: document.getElementById("audio3")
-};
-
-function stopAll() {
-  Object.values(audios).forEach(a => {
-    a.pause();
-    a.currentTime = 0;
-  });
-}
+const imgEl = document.getElementById("img");
+const audioEl = document.getElementById("audio");
 
 function switchTab(num) {
   current = num;
 
-  document.getElementById("img").src = images[num];
-
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab")[num - 1].classList.add("active");
 
-  stopAll();
+  imgEl.src = data[num].img;
 
-  audios[num].play();
+  audioEl.pause();
+  audioEl.currentTime = 0;
+  audioEl.src = data[num].audio;
+
+  // play only after user interaction exists
+  audioEl.play().catch(() => {
+    console.log("Autoplay blocked");
+  });
 }
 
-/* FIRST ENTER */
+/* FIRST CLICK UNLOCK */
 document.getElementById("enterBtn").addEventListener("click", () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
-  // auto play first section audio
-  audios[1].play();
+  // FORCE FIRST STATE LOAD
+  imgEl.src = data[1].img;
+  audioEl.src = data[1].audio;
+
+  audioEl.play().catch(() => {
+    console.log("Autoplay blocked even after click");
+  });
 });
 </script>
 
