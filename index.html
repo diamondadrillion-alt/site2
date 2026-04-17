@@ -60,6 +60,23 @@ header {
   color: black;
 }
 
+/* IP ADDRESS DISPLAY - Only for Tab 1 */
+#ipDisplay {
+  position: fixed;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #ff4444;
+  z-index: 3;
+  display: none; /* Hidden by default */
+  text-shadow: 0 0 10px rgba(255, 68, 68, 0.8);
+}
+
 /* CENTER TEXT BOX */
 .text-box {
   position: fixed;
@@ -69,17 +86,11 @@ header {
   padding: 20px 30px;
   text-align: center;
   z-index: 1;
-
-  /* Bigger text */
   font-size: 48px;
   font-weight: bold;
-
-  /* Red → Purple gradient text */
   background: linear-gradient(90deg, red, purple);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-
-  /* Glow for visibility */
   text-shadow: 0 0 20px rgba(255, 0, 0, 0.7),
                0 0 30px rgba(128, 0, 128, 0.7);
 }
@@ -94,20 +105,34 @@ header {
 
 <div id="main" class="blurred">
 
-<header>
-  <div class="tab active" onclick="switchTab(1)">1</div>
-  <div class="tab" onclick="switchTab(2)">2</div>
-  <div class="tab" onclick="switchTab(3)">3</div>
-</header>
+  <!-- IP Display (only visible on Tab 1) -->
+  <div id="ipDisplay">Your IP: <span id="ipAddress">Loading...</span></div>
 
-<video id="video" autoplay loop muted playsinline></video>
-<audio id="audio" loop></audio>
+  <header>
+    <div class="tab active" onclick="switchTab(1)">1</div>
+    <div class="tab" onclick="switchTab(2)">2</div>
+    <div class="tab" onclick="switchTab(3)">3</div>
+  </header>
 
-<div id="textBox" class="text-box"></div>
+  <video id="video" autoplay loop muted playsinline></video>
+  <audio id="audio" loop></audio>
+
+  <div id="textBox" class="text-box"></div>
 
 </div>
 
 <script>
+// IP fetching function (using a public API)
+async function getUserIP() {
+  try {
+    const response = await fetch('https://api.ipify.org?format=json');
+    const data = await response.json();
+    document.getElementById('ipAddress').textContent = data.ip;
+  } catch (error) {
+    document.getElementById('ipAddress').textContent = 'Unable to fetch IP';
+  }
+}
+
 const data = {
   1: {
     video: "https://file.garden/aeFV1O6P_R_1-nv5/ssstik.io_@1archiver_1776383596465.mp4",
@@ -130,6 +155,7 @@ const videoEl = document.getElementById("video");
 const audioEl = document.getElementById("audio");
 const textBox = document.getElementById("textBox");
 const enterBtn = document.getElementById("enterBtn");
+const ipDisplay = document.getElementById("ipDisplay");
 
 function switchTab(num) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
@@ -141,7 +167,7 @@ function switchTab(num) {
   videoEl.load();
   videoEl.play().catch(()=>{});
 
-  // AUDIO (LOOPS AUTOMATICALLY)
+  // AUDIO
   audioEl.pause();
   audioEl.currentTime = 0;
   audioEl.src = data[num].audio;
@@ -149,20 +175,24 @@ function switchTab(num) {
 
   // TEXT
   textBox.textContent = data[num].text;
+
+  // Show IP only on Tab 1
+  if (num === 1) {
+    ipDisplay.style.display = "block";
+  } else {
+    ipDisplay.style.display = "none";
+  }
 }
 
 enterBtn.onclick = () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
-  // START FIRST TAB
-  videoEl.src = data[1].video;
-  videoEl.play().catch(()=>{});
+  // Start first tab
+  switchTab(1);
 
-  audioEl.src = data[1].audio;
-  audioEl.play().catch(()=>{});
-
-  textBox.textContent = data[1].text;
+  // Fetch IP when entering
+  getUserIP();
 };
 </script>
 
