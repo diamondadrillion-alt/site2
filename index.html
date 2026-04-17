@@ -67,10 +67,21 @@ header {
   left: 50%;
   transform: translate(-50%, -50%);
   padding: 20px 30px;
-  border-radius: 10px;
-  font-size: 24px;
   text-align: center;
   z-index: 1;
+
+  /* Bigger text */
+  font-size: 48px;
+  font-weight: bold;
+
+  /* Red → Purple gradient text */
+  background: linear-gradient(90deg, red, purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Glow for visibility */
+  text-shadow: 0 0 20px rgba(255, 0, 0, 0.7),
+               0 0 30px rgba(128, 0, 128, 0.7);
 }
 </style>
 </head>
