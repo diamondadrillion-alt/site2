@@ -1,6 +1,4 @@
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-
 let current = 1;
 
 const data = {
@@ -36,8 +34,6 @@ function switchTab(num) {
   audioEl.play().catch(() => {});
 }
 
-window.switchTab = switchTab; // important for onclick to work
-
 document.getElementById("enterBtn").addEventListener("click", () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
@@ -46,7 +42,5 @@ document.getElementById("enterBtn").addEventListener("click", () => {
 
   audioEl.src = data[1].audio;
   audioEl.play().catch(() => {});
-});
-
 });
 </script>
