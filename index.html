@@ -11,7 +11,7 @@ const data = {
     audio: "audio/audio2.mp3" 
   },
   3: { 
-    img: "https://file.garden/aeFV1O6P_R_1-nv5/YOUR-GIF-HERE.gif", 
+    img: "https://via.placeholder.com/500x300.gif", 
     audio: "audio/audio3.mp3" 
   }
 };
@@ -19,13 +19,17 @@ const data = {
 const imgEl = document.getElementById("img");
 const audioEl = document.getElementById("audio");
 
-/* ✅ PRELOAD ALL GIFS */
+/* SAFE PRELOAD */
 const preloaded = {};
 
 Object.keys(data).forEach(key => {
-  const img = new Image();
-  img.src = data[key].img;
-  preloaded[key] = img;
+  try {
+    const img = new Image();
+    img.src = data[key].img;
+    preloaded[key] = img;
+  } catch (e) {
+    console.error("Image failed:", key);
+  }
 });
 
 function switchTab(num) {
@@ -34,10 +38,10 @@ function switchTab(num) {
   document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
   document.querySelectorAll(".tab")[num - 1].classList.add("active");
 
-  // ✅ instant switch (no reload)
-  imgEl.src = preloaded[num].src;
+  if (preloaded[num]) {
+    imgEl.src = preloaded[num].src;
+  }
 
-  // AUDIO
   audioEl.pause();
   audioEl.currentTime = 0;
   audioEl.src = data[num].audio;
@@ -45,13 +49,14 @@ function switchTab(num) {
   audioEl.play().catch(() => {});
 }
 
-/* FIRST CLICK */
+/* ENTER CLICK */
 document.getElementById("enterBtn").addEventListener("click", () => {
   document.getElementById("overlay").style.display = "none";
   document.getElementById("main").classList.remove("blurred");
 
-  // load first instantly
-  imgEl.src = preloaded[1].src;
+  if (preloaded[1]) {
+    imgEl.src = preloaded[1].src;
+  }
 
   audioEl.src = data[1].audio;
   audioEl.play().catch(() => {});
